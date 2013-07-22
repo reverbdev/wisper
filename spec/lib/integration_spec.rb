@@ -68,4 +68,18 @@ describe Wisper do
     command.execute(true)
     command.execute(false)
   end
+
+  it 'chains block subscribers with named subscribers' do
+    insider = double('Insider')
+    listener = double('listener')
+
+    listener.should_receive(:render).with('success')
+    insider.should_receive(:render).with('success')
+
+    command = MyCommand.new
+    command.on(:foo) { |message| insider.render('success') }
+    command.subscribe(listener)
+
+    command.execute(true)
+  end
 end
